@@ -14,7 +14,7 @@
     <div>
         <input type='text' id='idInput' value='' placeholder="login ID">
         <input type='password' id='passwordInput' value='' placeholder="login PW">
-        <input type='button' id='loginButton' valu='로그인'>
+        <input type='button' id='loginButton' value='로그인'>
     </div>
     <div>
         <div>
@@ -60,8 +60,24 @@
         socket.emit('message', output);
     });
 
-    $('#loginButton').bind('click', (event) => {
+    $('#loginButton').bind('click', () => {
+        try {
+            var userID = document.getElementById('idInput').value;
 
+            let response = await fetch ('http://192.168.0.40:3000/login', {
+                method: 'post',
+                headers: {
+                    'Content-Type' : 'application/json',
+                },
+                body: {userID: userID},
+            });
+
+            if (response.ok) {
+                window.alert('Login Success');
+            }
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     $('#createRoom').bind('click', (event) => {
