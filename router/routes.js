@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', (req, res) => {
+    console.log(req.session);
     res.render('index');
 });
 
@@ -16,12 +17,5 @@ router.post('/room/:id', async (req, res) => {
     }
 });
 
-router.get('/room/:id', async (req, res) => {
-    try {
-        console.log('get')
-    } catch (err) {
-
-    }
-});
 
 module.exports = router;

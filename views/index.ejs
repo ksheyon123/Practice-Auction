@@ -12,16 +12,30 @@
 
 <body>
     <div>
-        <input type='text' id='senderInput' value='test01'>
-        <input type='text' id='recepientInput' value='ALL'>
-        <input type='text' id='dataInput' value='Hi!'>
-        <input type='button' id='sendButton' value='전송'>
+        <input type='text' id='idInput' value='' placeholder="login ID">
+        <input type='password' id='passwordInput' value='' placeholder="login PW">
+        <input type='button' id='loginButton' valu='로그인'>
     </div>
     <div>
-        <input type='text' id='roomName' value='room01'>
-        <input type='text' id='roomNumber' value='01'>
+        <div>
+            <span>보내는 사람 아이디 : </span>
+            <input type='text' id='senderInput' value='test01'>
+        </div>
+        <div>
+            <span>받는 사람 아이디 : </span>
+            <input type='text' id='recepientInput' value='ALL'>
+        </div>
+        <div>
+            <span>메시지 데이터 : </span>
+            <input type='text' id='dataInput' value='안녕!'>
+        </div>
+        <br>
+        <input type='button' id='sendButton' value='전송'>
+
         <input type='button' id='createRoom' value='방 생성'>
     </div>
+
+    <p>결과 : </p>
     <div id='result'></div>
 </body>
 <script src='socket.io/socket.io.js'></script>
@@ -31,13 +45,12 @@
     });
 
     $('#sendButton').bind('click', (event) => {
-        println('Send 버튼이 클릭되었습니다. ');
 
         var sender = document.getElementById('senderInput').value;
         var recepient = document.getElementById('recepientInput').value;
         var data = document.getElementById('dataInput').value;
 
-        var output = { sender: sender, recepient: recepient, data: data };
+        var output = { sender: sender, recepient: recepient, command: 'chat', type : 'text', data: data };
 
         if (socket == undefined) {
             alert('서버에 연결되어 있지 않습니다. 먼저 서버에 연결하세요. ');
@@ -47,20 +60,12 @@
         socket.emit('message', output);
     });
 
-    $('#createRoom').on('click', () => {
-        println('방이 생성되었습니다.');
+    $('#loginButton').bind('click', (event) => {
 
-        var roomName = document.getElementById('roomName').value;
-        var roomNumber = document.getElementById('roomNumber').value;
+    });
 
-        var output = { roomName: roomName, roomNumber: roomNumber };
+    $('#createRoom').bind('click', (event) => {
 
-        if (socket == undefined) {
-            alert('서버에 연결되어 있지 않습니다. 먼저 서버에 연결하세요. ');
-            return;
-        }
-
-        socket.emit('room', output);
     });
 
 
@@ -75,25 +80,20 @@
         socket = io.connect(url, options);
 
         socket.on('connect', () => {
-            println('웹 소켓 서버에 연결되었습니다. : ' + url);
+            println('웹 소켓 서버에 연결되었습니다. ');
 
             socket.on('message', (message) => {
                 console.log(JSON.stringify(message));
 
-                println('<p>수신 메세지 : ' + message.sender + ', ' + message.recepient + ', ' + message.data + '</p>');
+                println('<p>수신 메세지 : ' + message.sender + ', ' + message.recepient + ', ' + message.command + ', ' + message.type + ', ' + message.data + '</p>');
             });
+        });
 
-            socket.on('room', (room) => {
-                console.log(JSON.stringify(room));
-
-                println(`<input type='button' id='${room.roomNumber}' value='${room.roomName}' onclick='room(${room.roomNumber})'>`);
-            });
+        socket.on('disconnect', () => {
+            println('웹 소켓 연결이 종료되었습니다. ');
         });
     }
 
-     room = async (data) => {
-        
-    }
 
 </script>
 

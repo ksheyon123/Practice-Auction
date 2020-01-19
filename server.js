@@ -35,6 +35,8 @@ var io = socketio.listen(server);
 
 io.sockets.on('connection', (socket) => {
     console.log('Connect to Socket: ', socket.request.connection._peername);
+
+    // 소켓 객체에 클라이언트 Host, Port 정보 속성으로 추가
     socket.remoteAddress = socket.request.connection._peername.address;
     socket.remotePort = socket.request.connection._peername.port;
 
@@ -43,25 +45,9 @@ io.sockets.on('connection', (socket) => {
         console.dir(message);
 
         if (message.recepient == 'ALL') {
+
+            // 나를 포함한 모든 클라이언트에게 메세지 전달
             io.sockets.emit('message', message);
-        }
-    });
-
-    socket.on('room', (room) => {
-        console.log('방 생성 이벤트를 받았습니다.');
-        console.dir(room);
-        console.log(session)
-        if (room.command == 'create') {
-            if (io.sockets.adapter.rooms[room.roomId]) {
-                console.log('방이 이미 만들어져 있습니다. ');
-            } else {
-                console.log('방을 새로 만듭니다. ');
-
-                socket.join(room.roomId);
-
-                var curRoom = io.sockets.adapter.rooms[room.roomId];
-                console.log('curRoom', curRoom);
-            }
         }
     });
 });
